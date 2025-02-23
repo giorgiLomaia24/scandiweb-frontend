@@ -1,5 +1,5 @@
 import React, { Component, createRef, forwardRef } from "react";
-import "./Slider.css";
+import "./slider.css";
 
 interface SliderProps {
   images: string[];
