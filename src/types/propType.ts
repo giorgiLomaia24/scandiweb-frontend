@@ -55,6 +55,7 @@ export interface ButtonPropsType {
     marginTop?: string;
     cursor?: string;
     margin?: string;
+    dataTestId?: string;
 }
 
 

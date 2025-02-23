@@ -22,6 +22,7 @@ class Button extends Component<ButtonPropsType> {
         circular: false,
         marginTop: "15px",
         cursor: "pointer",
+        dataTestId: ''
     };
 
     render() {
@@ -51,6 +52,7 @@ class Button extends Component<ButtonPropsType> {
             marginTop,
             cursor,
             margin,
+            dataTestId
         } = this.props;
 
         const buttonStyles = {
@@ -77,11 +79,12 @@ class Button extends Component<ButtonPropsType> {
             margin,
             gap: label && icon ? "8px" : "0px",
             marginTop,
+
         };
 
         return (
             <button
-                data-testid="add-to-cart"
+                data-testid={dataTestId}
                 onClick={onClick}
                 className={`custom-button ${hoverEffect ? "hover-effect" : ""}`}
                 style={buttonStyles}
