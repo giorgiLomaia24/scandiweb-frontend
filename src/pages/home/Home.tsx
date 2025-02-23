@@ -37,8 +37,8 @@ class Home extends Component<HomePropsType> {
   render() {
     const { products, loading, error } = this.props;
 
-    if (loading) return <HomePagePlaceHolder />;
-    if (error) return <ErrorPage />;
+    // if (loading) return <HomePagePlaceHolder />;
+    // if (error) return <ErrorPage />;
 
     return (
       <>
