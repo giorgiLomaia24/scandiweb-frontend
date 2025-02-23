@@ -20,8 +20,8 @@ class SliderClass extends Component<SliderProps, SliderState> {
     super(props);
     this.state = { activeIndex: this.props.activeImageIndex };
 
-    // ✅ Ensure type safety for refs
-    this.imageRefs = props.images.map(() => createRef<HTMLDivElement>());
+    this.imageRefs = props.images.map(() => createRef<HTMLDivElement>()) as React.RefObject<HTMLDivElement>[];
+
   }
 
   componentDidUpdate(_: SliderProps, prevState: SliderState) {
@@ -60,7 +60,7 @@ class SliderClass extends Component<SliderProps, SliderState> {
 
   render() {
     const { images, isHorizontal } = this.props;
-    let { activeIndex } = this.state;
+    
 
     return (
       <div data-testid='product-gallery' className={`slider-container ${isHorizontal ? "horizontal" : "vertical"}`} ref={this.sliderRef}>

@@ -21,12 +21,12 @@ interface ReduxProps {
 type Props = CardPropsType & ReduxProps;
 
 export class Card extends Component<Props> {
-    handleAddToCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
+    handleAddToCartClick = (event?: React.MouseEvent<HTMLButtonElement>) => {
+        event?.preventDefault();  // Prevent default behavior if event exists
+        event?.stopPropagation(); // Stop event from bubbling up to <Link>
 
         const { addToCart, cartItems, id, name, imageUrl, price, in_stock, attributes, setPlaceOrder } = this.props;
 
-        // If the product is out of stock, don't proceed
         if (!in_stock) return;
 
         let selectedAttributes: SelectedAttributesType = {};
@@ -48,6 +48,8 @@ export class Card extends Component<Props> {
         handleAddToCart(product, selectedAttributes, cartItems, addToCart);
         setPlaceOrder(false);
     };
+
+
 
     render() {
         const { id, imageUrl, name, price, in_stock } = this.props;

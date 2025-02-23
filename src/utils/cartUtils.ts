@@ -1,4 +1,5 @@
 import { CartAttributeType, CartAttributeValueType, CartItemType, SelectedAttributesType } from "../types/cartType";
+import { AttributeType } from "../types/productType";
 
 export const handleAddToCart = (
   product: any,
@@ -11,7 +12,7 @@ export const handleAddToCart = (
   let attributesToUse = { ...selectedAttributes };
 
  
-  product.attributes?.forEach((attr) => {
+  product.attributes?.forEach((attr: AttributeType) => {
     if (!attributesToUse[attr.name] && attr.values?.length) {
       attributesToUse[attr.name] = { id: attr.id, value: attr.values[0].value };
     }
