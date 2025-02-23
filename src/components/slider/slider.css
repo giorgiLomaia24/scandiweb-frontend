@@ -1,0 +1,125 @@
+.slider-container {
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    max-width: 100%;
+    gap: 20px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  
+  .slider-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  
+  .slider-container.vertical {
+    flex-direction: column;
+    width: 83px;
+    min-height: 478px;
+    max-height: 478px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  
+  .slider-container.vertical .slide {
+    width: 79px;
+    height: 80px;
+    margin-bottom: 5px;
+    cursor: pointer !important;
+  }
+  .slider-container.vertical .slide:nth-child(1){
+    margin-top: 0px;
+  }
+
+  .slider-container.vertical .slide.active {
+    border: 2px solid #5ECE7B !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+  
+  .slider-container.horizontal {
+    max-width: 575px !important;
+    min-width: 575px !important;
+    flex-direction: row;
+    overflow-x: scroll;
+  }
+  
+  .slider-container.horizontal .slide {
+    width: 79px;
+    height: 80px;
+    margin-right: 5px;
+  }
+
+ 
+  
+  .slide.active {
+    border: 2px solid #5ECE7B;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    transition: transform width height 0.3s ease;
+  }
+
+ .slide.active img  {
+     width: 70%;
+     height: 70%;
+ }
+  
+  .slider-btn {
+    position: absolute;
+    border: none;
+    background: black;
+    color: white;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  
+  .slider-btn:hover {
+    opacity: 1;
+  }
+  
+  .slider-btn.prev {
+    top: 5px;
+  }
+  
+  .slider-btn.next {
+    bottom: 5px;
+  }
+  
+  .slider-container.horizontal .prev {
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .slider-container.horizontal .next {
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  @media screen and (max-width:1116px) {
+    .slider-container.horizontal {
+      max-width: 70% !important;
+      min-width: 70% !important;
+      overflow-x: scroll;
+      margin: auto;
+      gap: 5px;
+    }
+
+  }
+  

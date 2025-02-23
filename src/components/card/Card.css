@@ -1,0 +1,101 @@
+.card {
+    width: 100%; 
+    max-width: 386px; 
+    height: auto; 
+    max-height: 444px; 
+    text-decoration: none; 
+    color: #1D1F22;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    transition: 0.5s ease-in-out;
+    
+}
+
+.card:hover {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25); 
+    transform: translateY(-2px);  
+}
+
+.card--image {
+    width: 354px;
+    height: 330px;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+.card.out-of-stock .card--image {
+    filter: grayscale(100%);
+}
+
+.out-of-stock-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+.card--header {
+    margin: 20px 0px;
+    width: 354px;
+    height: 58px;
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    align-items: left;
+    gap: 15px;
+
+}
+
+.product--name {
+    font-size: 18px;
+    color: rgba(29, 31, 34, 1);
+}
+.product--price {
+    font-weight: bolder;
+}
+
+.add--to_cart{
+    width: 50px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 304px;
+    left: 287px;
+    background-color: #5ECE7B;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    color: #fff;
+    font-size: 24px;
+    box-shadow: 0px 4px 11px 0px rgba(0, 0, 0, 0.15);
+    visibility: hidden;
+    transition: visibility 0.3s ease;
+}
+
+.hover-effect {
+    visibility: hidden !important;
+    transition: visibility 0.3s ease-in-out !important;
+  }
+  
+  .card:hover > .card--image > .custom-button.hover-effect {
+    visibility: visible !important;
+  }
+  
+

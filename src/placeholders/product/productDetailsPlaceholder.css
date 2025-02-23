@@ -1,0 +1,98 @@
+
+.placeholder-product--details-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:160px 20px;
+  max-width: 1200px;
+  margin: auto;
+  gap: 20px;
+}
+
+.placeholder-product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.placeholder-gallery-item {
+  width: 80px;
+  height: 80px;
+  background: #ddd;
+  border-radius: 5px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.placeholder-product--details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.placeholder-product--image {
+  width: 300px;
+  height: 400px;
+  background: #ddd;
+  border-radius: 10px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 15px;
+}
+
+.placeholder-text {
+  height: 20px;
+  background: #ddd;
+  border-radius: 5px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.placeholder-name {
+  width: 60%;
+  height: 25px;
+}
+
+.placeholder-attribute {
+  width: 80%;
+}
+
+.placeholder-price-label {
+  width: 40px;
+}
+
+.placeholder-price-value {
+  width: 60px;
+  height: 30px;
+}
+
+.placeholder-button {
+  width: 120px;
+  height: 40px;
+  background: #ccc;
+  border-radius: 5px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.placeholder-description {
+  width: 90%;
+  height: 50px;
+}
+
+@keyframes pulse {
+  0% {
+      background-color: #ddd;
+  }
+  50% {
+      background-color: #e0e0e0;
+  }
+  100% {
+      background-color: #ddd;
+  }
+}

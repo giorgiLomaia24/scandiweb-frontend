@@ -1,0 +1,93 @@
+.placeholder-wrapper {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+
+}
+
+.placeholder-title-wrapper {
+    margin-top: 160px;
+    padding-left: 101px;
+}
+
+.title-placeholder {
+    width: 200px;
+    height: 25px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: loadingAnimation 1.5s infinite linear;
+}
+
+@keyframes loadingAnimation {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.placeholder-card-wrapper {
+    width: 100%;
+    padding: 150px 101px;
+    display: flex;
+    justify-content: space-around;
+    gap: 80px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+
+.placeholder-card {
+    width: 350px;
+    height: 450px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.placeholder-card * {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: placeholder-loading 1.5s infinite linear;
+    border-radius: 6px;
+}
+
+.placeholder-card-image {
+    width: 100%;
+    height: 150px;
+}
+
+
+.placeholder-card-content {
+    width: 80%;
+    height: 20px;
+    margin: 10px auto;
+}
+
+
+.placeholder-card-footer {
+    width: 60%;
+    height: 20px;
+    margin: 10px auto;
+}
+
+
+@keyframes placeholder-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
