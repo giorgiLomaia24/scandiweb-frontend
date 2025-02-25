@@ -1,21 +1,20 @@
-import { Component, createRef } from 'react';
-import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { RootState } from '../../redux/store';
-import { fetchProductDetails, setPlaceOrder ,setSelectedProduct} from '../../redux/slices/productSlice';
-import { addToCart } from '../../redux/slices/cartSlice';
-import Slider from '../../components/slider/Slider';
-import Attribute from '../../components/attribute/Attribute';
-import ProductImage from '../../components/pproduct-image/ProductImage';
-import Button from '../../components/button/Button';
-import { handleAddToCart } from '../../utils/cartUtils';
-import parse from 'html-react-parser';
-import { ProductDetailsPropsType } from '../../types/propType';
-import { SelectedAttributesType } from '../../types/cartType';
-import ProductDetailsPlaceHolder from '../../placeholders/product/ProductDetailsPlaceHolder';
-import { ProductType } from '../../types/productType';
-import './productDetails.css';
-
+import { Component, createRef } from "react";
+import { connect } from "react-redux";
+import { RootState } from "../../redux/store";
+import { fetchProductDetails, setPlaceOrder, setSelectedProduct } from "../../redux/slices/productSlice";
+import { addToCart } from "../../redux/slices/cartSlice";
+import Slider from "../../components/slider/Slider";
+import Attribute from "../../components/attribute/Attribute";
+import ProductImage from "../../components/pproduct-image/ProductImage";
+import Button from "../../components/button/Button";
+import { handleAddToCart } from "../../utils/cartUtils";
+import parse from "html-react-parser";
+import { ProductDetailsPropsType } from "../../types/propType";
+import { SelectedAttributesType } from "../../types/cartType";
+import ProductDetailsPlaceHolder from "../../placeholders/product/ProductDetailsPlaceHolder";
+import { ProductType } from "../../types/productType";
+import { withRouter } from "../../utils/withRouter"; // ✅ Ensures route params are injected
+import "./productDetails.css";
 
 interface ProductDetailsState {
   isHorizontal: boolean;
@@ -24,7 +23,7 @@ interface ProductDetailsState {
   productState?: ProductType;
 }
 
-export class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsState> {
+class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsState> {
   state: ProductDetailsState = {
     isHorizontal: window.innerWidth <= 768,
     activeImageIndex: 0,
@@ -34,17 +33,27 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
   sliderRef = createRef<{ scrollToNext: () => void; scrollToPrev: () => void }>();
 
   componentDidMount() {
-    console.log("componentDidMount - ID:", this.props.id);
+    const { fetchProductDetails, setSelectedProduct, id, products } = this.props;
+
+    console.log("componentDidMount - ID:", id);
     console.log("componentDidMount - Product from Redux before fetching:", this.props.product);
 
-    if (this.props.products.length === 0) {
-      console.log("Fetching product details...");
-      this.props.fetchProductDetails(this.props.id ?? "");
+    if (!id) {
+      console.error("No product ID found in URL params.");
+      return;
+    }
+
+    if (products.length === 0) {
+      console.log("Fetching product details from API...");
+      fetchProductDetails(id);
     } else {
-      console.log("Finding product in Redux store...");
-      const product = this.props.products.find((p: ProductType) => p.id === this.props.id);
+      console.log("Searching for product in Redux store...");
+      const product = products.find((p) => p.id === id);
       if (product) {
-        this.props.setSelectedProduct(product);
+        setSelectedProduct(product);
+      } else {
+        console.log("Product not found in store, fetching from API...");
+        fetchProductDetails(id);
       }
     }
 
@@ -52,21 +61,18 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
     window.addEventListener("resize", this.handleResize);
   }
 
-
   componentDidUpdate(prevProps: ProductDetailsPropsType) {
-    if (prevProps.product !== this.props.product) {
-      this.setDefaultAttributes();
-    }
+    const { product } = this.props;
 
-    if (prevProps.product !== this.props.product && this.props.product) {
-      console.log("Redux updated with product:", this.props.product);
-      this.setState({ productState: this.props.product });
+    if (prevProps.product !== product && product) {
+      console.log("Redux updated with product:", product);
+      this.setState({ productState: product });
       this.setDefaultAttributes();
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
   }
 
   setDefaultAttributes = () => {
@@ -95,7 +101,7 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
       (prevState) => ({
         activeImageIndex: (prevState.activeImageIndex + 1) % (product?.gallery.length || 1),
       }),
-      () => window.scrollTo({ top: 0, behavior: 'smooth' })
+      () => window.scrollTo({ top: 0, behavior: "smooth" })
     );
   };
 
@@ -108,7 +114,7 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
         activeImageIndex:
           prevState.activeImageIndex === 0 ? (product?.gallery.length || 1) - 1 : prevState.activeImageIndex - 1,
       }),
-      () => window.scrollTo({ top: 0, behavior: 'smooth' })
+      () => window.scrollTo({ top: 0, behavior: "smooth" })
     );
   };
 
@@ -127,7 +133,7 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
 
   addToCart = () => {
     const { product, addToCart, cartItems, setPlaceOrder } = this.props;
-    if (product.in_stock) {
+    if (product?.in_stock) {
       handleAddToCart(product, this.state.selectedAttributes, cartItems, addToCart);
     }
     setPlaceOrder(false);
@@ -138,12 +144,11 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
     const { isHorizontal, activeImageIndex, selectedAttributes } = this.state;
 
     if (loading) return <ProductDetailsPlaceHolder />;
-    if (error) return <p style={{ margin: '300px auto' }} >{error}</p>;
-    if (!product) return <p style={{ margin: '300px auto' }}>no product this is the error</p>;
-
+    if (error) return <p style={{ margin: "300px auto" }}>{error}</p>;
+    if (!product) return <p style={{ margin: "300px auto" }}>No product found.</p>;
 
     return (
-      <div className='product--details-wrapper'>
+      <div className="product--details-wrapper">
         <Slider
           ref={this.sliderRef}
           images={product.gallery}
@@ -183,10 +188,10 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
               onClick={this.addToCart}
               label="ADD TO CART"
               hoverEffect={false}
-              backgroundColor={product.in_stock ? '#5ECE7B' : 'gray'}
-              cursor={product.in_stock ? 'pointer' : 'not-allowed'}
-              margin={isHorizontal ? '15px auto' : ''}
-              dataTestId='add-to-cart'
+              backgroundColor={product.in_stock ? "#5ECE7B" : "gray"}
+              cursor={product.in_stock ? "pointer" : "not-allowed"}
+              margin={isHorizontal ? "15px auto" : ""}
+              dataTestId="add-to-cart"
             />
 
             <div className="description" data-testid="product-description">
@@ -195,13 +200,12 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
           </div>
         </div>
       </div>
-
-
     );
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState, ownProps: any) => ({
+  id: ownProps.match.params.id, // ✅ Ensures `id` is retrieved correctly
   product: state.product.selectedProduct,
   products: state.product.products,
   loading: state.product.loading,
@@ -209,10 +213,5 @@ const mapStateToProps = (state: RootState) => ({
   cartItems: state.cart.items,
 });
 
-const ProductDetailsWrapper = (props: ProductDetailsPropsType) => {
-  const { id } = useParams<{ id: string }>();
-  return <ProductDetails {...props} id={id ?? ""} />;
-};
-
-
-export default connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder,setSelectedProduct })(ProductDetailsWrapper);
+// ✅ Wrapped with `withRouter` to pass `id` from URL
+export default withRouter(connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder, setSelectedProduct })(ProductDetails));
