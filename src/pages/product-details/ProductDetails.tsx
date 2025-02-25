@@ -2,7 +2,7 @@ import { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../../redux/store';
-import { fetchProductDetails,setPlaceOrder } from '../../redux/slices/productSlice';
+import { fetchProductDetails, setPlaceOrder ,setSelectedProduct} from '../../redux/slices/productSlice';
 import { addToCart } from '../../redux/slices/cartSlice';
 import Slider from '../../components/slider/Slider';
 import Attribute from '../../components/attribute/Attribute';
@@ -12,9 +12,10 @@ import { handleAddToCart } from '../../utils/cartUtils';
 import parse from 'html-react-parser';
 import { ProductDetailsPropsType } from '../../types/propType';
 import { SelectedAttributesType } from '../../types/cartType';
-import './productDetails.css';
 import ProductDetailsPlaceHolder from '../../placeholders/product/ProductDetailsPlaceHolder';
-import ErrorPage from '../../errors/ErrorPage';
+import { ProductType } from '../../types/productType';
+import './productDetails.css';
+
 
 interface ProductDetailsState {
   isHorizontal: boolean;
@@ -32,10 +33,21 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
   sliderRef = createRef<{ scrollToNext: () => void; scrollToPrev: () => void }>();
 
   componentDidMount() {
-    this.props.fetchProductDetails(this.props.id);
+
+
+    if (this.props.products.length === 0) {
+      this.props.fetchProductDetails(this.props.id ?? "");
+    } else {
+      const product = this.props.products.find((p: ProductType) => p.id === this.props.id);
+      if (product) {
+        this.props.setSelectedProduct(product);
+      }
+    }
+
     this.setDefaultAttributes();
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
   }
+
 
   componentDidUpdate(prevProps: ProductDetailsPropsType) {
     if (prevProps.product !== this.props.product) {
@@ -104,7 +116,7 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
   };
 
   addToCart = () => {
-    const { product, addToCart, cartItems,setPlaceOrder } = this.props;
+    const { product, addToCart, cartItems, setPlaceOrder } = this.props;
     if (product.in_stock) {
       handleAddToCart(product, this.state.selectedAttributes, cartItems, addToCart);
     }
@@ -115,9 +127,10 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
     const { product, loading, error } = this.props;
     const { isHorizontal, activeImageIndex, selectedAttributes } = this.state;
 
-    if (loading) return <ProductDetailsPlaceHolder/>;
-    if (error) return <ErrorPage/>;
-    if (!product) return <ErrorPage/>;
+    if (loading) return <ProductDetailsPlaceHolder />;
+    if (error) return <p style={{ margin: '300px auto' }} >{error}</p>;
+    if (!product) return <p style={{ margin: '300px auto' }}>no product this is the error</p>;
+
 
     return (
       <div className='product--details-wrapper'>
@@ -162,8 +175,8 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
               hoverEffect={false}
               backgroundColor={product.in_stock ? '#5ECE7B' : 'gray'}
               cursor={product.in_stock ? 'pointer' : 'not-allowed'}
-              marginTop="15px"
-              margin={isHorizontal ? '10px auto' : ''}
+              margin={isHorizontal ? '15px auto' : ''}
+              dataTestId='add-to-cart'
             />
 
             <div className="description" data-testid="product-description">
@@ -172,22 +185,27 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
           </div>
         </div>
       </div>
-   
-    
+
+
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => ({
   product: state.product.selectedProduct,
+  products: state.product.products,
   loading: state.product.loading,
   error: state.product.error,
   cartItems: state.cart.items,
 });
 
-const ProductDetailsWrapper = (props: any) => {
-  const { id } = useParams();
-  return <ProductDetails {...props} id={id?.replace(/[{}]/g, '')} />;
+const ProductDetailsWrapper = (props: Omit<ProductDetailsPropsType, "id">) => {
+  const { id } = useParams<{ id: string }>(); // ✅ Extract product ID from the URL
+  if (!id) return <p>Product ID is missing</p>; // ✅ Handle missing ID
+
+  return <ProductDetails {...props} id={id} />; // ✅ Pass `id` properly
 };
 
-export default connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder })(ProductDetailsWrapper);
+
+
+export default connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder,setSelectedProduct })(ProductDetailsWrapper);

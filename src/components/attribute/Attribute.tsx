@@ -12,7 +12,7 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
   constructor(props: AttributePropsType) {
     super(props);
     this.state = {
-      selectedAttributes: props.selectedAttributes || {}, 
+      selectedAttributes: props.selectedAttributes || {},
     };
   }
 
@@ -66,12 +66,15 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
       <>
         {this.props.attributes.map((attribute) => {
           const kebabCaseAttributeName = attribute.name.replace(/\s+/g, '-').toLowerCase();
+          const containerDataTestId = this.props.isSmall
+            ? `cart-item-attribute-${kebabCaseAttributeName}`
+            : `product-attribute-${kebabCaseAttributeName}`;
 
           return (
             <div
               key={attribute.id}
               className={`attribute--wrapper ${this.props.isSmall ? "sm" : ""}`}
-              data-testid={`cart-item-attribute-${kebabCaseAttributeName}`}
+              data-testid={containerDataTestId}
             >
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
@@ -79,14 +82,18 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                   const kebabCaseValue = value.value.replace(/\s+/g, '-').toLowerCase();
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
 
+                  const optionDataTestId = this.props.isSmall
+                    ? `cart-item-attribute-${kebabCaseAttributeName}-${kebabCaseValue}${isSelected ? "-selected" : ""}`
+                    : '';
+
                   return (
                     <div
                       key={value.value}
                       className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""}`}
                       onClick={() => this.props.isSmall ? {} : this.handleSelect(Number(attribute.id), attribute.name, value.value)}
-                      data-testid={`cart-item-attribute-${kebabCaseAttributeName}-${kebabCaseValue}${isSelected ? "-selected" : ""}`}
+                      data-testid={optionDataTestId}
                     >
-                      {attribute.type === 'swatch' && (<div style={{background: value.value}}/>) }
+                      {attribute.type === 'swatch' && (<div style={{ background: value.value }} />)}
                       {attribute.type === "text" ? getSizeAbbreviation(value.display_value) : ""}
                     </div>
                   );

@@ -7,6 +7,7 @@ export default function AppRouter() {
 
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/:categoryName" element={<Home />} />
       <Route path="/product/:id" element={<ProductDetails />} />
     </Routes>
 

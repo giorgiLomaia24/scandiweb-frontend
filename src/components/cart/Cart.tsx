@@ -86,7 +86,7 @@ export class Cart extends Component<CartProps> {
                 label={this.state.placeOrderLoading ? 'Making Order...' : 'Place Order'}
                 width="100%"
                 height="43px"
-                dataTestId='cart-btn'
+                dataTestId=''
                 onClick={this.handlePlaceOrder}
 
               />

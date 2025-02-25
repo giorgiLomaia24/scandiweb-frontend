@@ -1,25 +1,30 @@
 import { ReactNode } from "react";
 import { CartItemType, SelectedAttributesType } from "./cartType";
-import { AttributeType, PriceType, ProductType } from "./productType";
+import { AttributeType, CategoryType, PriceType, ProductType } from "./productType";
 
 export interface ProductDetailsPropsType {
     product: ProductType;
+    products: ProductType[];
     loading: boolean;
     error: string | null;
     fetchProductDetails: (productId: string) => void;
     addToCart: (item: CartItemType) => void;
     setPlaceOrder: (status: boolean) => void;
+    setSelectedProduct: (product: ProductType) => void;
     cartItems: CartItemType[];
     id: string;
 }
   
 export interface HomePropsType {
     products: ProductType[];
+    categories: CategoryType[]; 
     loading: boolean;
     error: string | null;
     selectedCategory: string;
     setSelectedCategoryName: string;
     fetchProductsByCategory: (category: string) => void;
+    match: { params: { categoryName?: string } }; 
+
 }
 
 export interface AttributePropsType {
@@ -79,6 +84,20 @@ export interface CartProps {
     placeOrder: (cartItems: CartItemType[]) => void;
     clearCart: () => void;
 }
+
+
+export interface NavbarProps {
+    products: any[]
+    categories: { id: string; name: string }[];
+    selectedCategory: string;
+    totalItemCount: number;
+    orderPlaced: boolean;
+    fetchCategories: () => void;
+    setSelectedCategory: (category: string) => void;
+    setSelectedCategoryName: (categoryName: string) => void;
+    fetchProductsByCategory: (categoryId: string) => void;
+    match: { params: { categoryName?: string } }; 
+  }
   
 export interface CartItemProps {
     handleIncreaseQty: (uniqueKey: string) => void;

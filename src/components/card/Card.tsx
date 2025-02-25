@@ -71,6 +71,7 @@ export class Card extends Component<Props> {
                             left="287px"
                             boxShadow="0px 4px 11px rgba(0, 0, 0, 0.15)"
                             hoverEffect={true}
+                            dataTestId='add-to-cart'
                         />
                     )}
                 </div>

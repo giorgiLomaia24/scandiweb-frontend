@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import client from "../../apollo/client";
 import { GET_CATEGORIES, GET_PRODUCTS_BY_CATEGORY, GET_PRODUCT_DETAILS } from '../../graphql/queries';
 import { CREATE_ORDER } from "../../graphql/mutations";
+import { ProductType } from "../../types/productType";
 
 
 
-// ✅ Initial State
 interface ProductState {
   categories: { id: string; name: string }[];
   products: any[];
@@ -81,27 +81,26 @@ export const placeOrder = createAsyncThunk(
         variables: { items: formattedItems },
       });
 
-      return data.createOrder; // ✅ Returns { order_id, message }
-    } catch (error: any) { // ✅ Explicitly type error as 'any' or use TypeScript casting
+      return data.createOrder; 
+    } catch (error: any) { 
       return rejectWithValue(error.message || "Unknown error occurred");
     }
 
   }
 );
 
-// ✅ Redux Slice
+
 const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
     setSelectedCategory: (state, action: PayloadAction<string>) => {
       state.selectedCategory = action.payload;
-      state.products = [];
     },
     setSelectedCategoryName: (state, action: PayloadAction<string>) => {
       state.selectedCategoryName = action.payload;
     },
-    setSelectedProduct: (state, action: PayloadAction<any>) => {
+    setSelectedProduct: (state, action: PayloadAction<ProductType>) => {
       state.selectedProduct = action.payload;
     },
     setPlaceOrder: (state, action: PayloadAction<boolean>) => {
@@ -137,7 +136,6 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = "Failed to fetch product details";
       })
-      // ✅ Handle Place Order
       .addCase(placeOrder.pending, (state) => {
         state.orderStatus = "Processing Order...";
       })

@@ -1,27 +1,43 @@
-import { Component } from 'react';
-import { connect } from 'react-redux';
-import Card from '../../components/card/Card';
-import { fetchProductsByCategory } from '../../redux/slices/productSlice';
-import { RootState } from '../../redux/store';
-import { HomePropsType } from '../../types/propType';
-import { ProductType } from '../../types/productType';
-import { SelectedAttributesType } from '../../types/cartType';
-import './home.css';
-import { capitalizeFirstLetter } from '../../utils/helperFunctions';
-import HomePagePlaceHolder from '../../placeholders/home/HomePagePlaceHolder';
-import ErrorPage from '../../errors/ErrorPage';
+import { Component } from "react";
+import { connect } from "react-redux";
+import { fetchProductsByCategory } from "../../redux/slices/productSlice";
+import { RootState } from "../../redux/store";
+import { HomePropsType } from "../../types/propType";
+import { CategoryType, ProductType } from "../../types/productType";
+import { SelectedAttributesType } from "../../types/cartType";
+import { capitalizeFirstLetter } from "../../utils/helperFunctions";
+import Card from "../../components/card/Card";
+import HomePagePlaceHolder from "../../placeholders/home/HomePagePlaceHolder";
+import ErrorPage from "../../errors/ErrorPage";
+import { withRouter } from "../../utils/withRouter"; 
+import "./home.css";
 
-class Home extends Component<HomePropsType> {
+class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }> {
+  constructor(props: HomePropsType) {
+    super(props);
+    this.state = {
+      filteredProducts: [],
+    };
+  }
+
   componentDidMount() {
-    const { fetchProductsByCategory, selectedCategory } = this.props;
-    fetchProductsByCategory(selectedCategory || 'all');
+    const { fetchProductsByCategory, products } = this.props;
+
+    if (products.length === 0) {
+      fetchProductsByCategory("all");
+    }
+
+    this.updateFilteredProducts(); 
   }
 
   componentDidUpdate(prevProps: HomePropsType) {
-    const { fetchProductsByCategory, selectedCategory } = this.props;
-
-    if (prevProps.selectedCategory !== selectedCategory) {
-      fetchProductsByCategory(selectedCategory);
+    
+    if (
+      prevProps.selectedCategory !== this.props.selectedCategory ||
+      prevProps.products !== this.props.products ||
+      prevProps.match.params.categoryName !== this.props.match.params.categoryName
+    ) {
+      this.updateFilteredProducts();
     }
   }
 
@@ -34,28 +50,60 @@ class Home extends Component<HomePropsType> {
     }, {} as SelectedAttributesType) || {};
   };
 
-  render() {
-    const { products, loading, error } = this.props;
+  getCategoryIdFromParamsOrRedux = (): number => {
+    const { categories, selectedCategory, match } = this.props;
+    const categoryIdFromParams = match.params.categoryName; 
 
-    // if (loading) return <HomePagePlaceHolder />;
-    // if (error) return <ErrorPage />;
+    const categoryName = categoryIdFromParams || selectedCategory;
+
+    if (!categoryName || categoryName === "all") return 0; 
+
+    const foundCategory = categories.find(
+      (cat: CategoryType) => cat.name.toLowerCase() === categoryName.toLowerCase()
+    );
+
+    return foundCategory ? Number(foundCategory.id) : 0; 
+  };
+
+  updateFilteredProducts = () => {
+    const { products } = this.props;
+    const categoryId = this.getCategoryIdFromParamsOrRedux(); 
+
+    if (categoryId === 0) {
+      this.setState({ filteredProducts: products });
+      return;
+    }
+
+    const filtered = products.filter((product) => Number(product.category_id) === categoryId);
+    this.setState({ filteredProducts: filtered });
+
+  };
+
+  render() {
+    const { loading, error, setSelectedCategoryName } = this.props;
+    const { filteredProducts } = this.state;
+
+    if (loading) return <HomePagePlaceHolder />;
+    if (error) return <ErrorPage />;
+
 
     return (
       <>
         <div className="category-title">
-          <h1>{capitalizeFirstLetter(this.props.setSelectedCategoryName)}</h1>
+          <h1>{capitalizeFirstLetter(setSelectedCategoryName)}</h1>
         </div>
+
         <div className="product-list">
-          {products?.length > 0 ? (
-            products.map((product) => (
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product: ProductType) => (
               <Card
                 key={product.id}
                 id={product.id}
-                imageUrl={product.gallery?.[0] || 'https://via.placeholder.com/150'}
+                imageUrl={product.gallery?.[0] || "https://via.placeholder.com/150"}
                 price={{
                   amount: product.price?.amount ?? 0,
-                  currency_label: product.price?.currency_label ?? 'USD',
-                  currency_symbol: product.price?.currency_symbol ?? '$',
+                  currency_label: product.price?.currency_label ?? "USD",
+                  currency_symbol: product.price?.currency_symbol ?? "$",
                 }}
                 name={product.name}
                 in_stock={product.in_stock}
@@ -64,7 +112,7 @@ class Home extends Component<HomePropsType> {
               />
             ))
           ) : (
-            <p>No products available.</p>
+            <p>No products available for this category.</p>
           )}
         </div>
       </>
@@ -72,14 +120,14 @@ class Home extends Component<HomePropsType> {
   }
 }
 
-// Map Redux state to props
 const mapStateToProps = (state: RootState) => ({
   products: state.product.products,
+  categories: state.product.categories,
   loading: state.product.loading,
   error: state.product.error,
   selectedCategory: state.product.selectedCategory,
-  setSelectedCategoryName: state.product.selectedCategoryName
+  setSelectedCategoryName: state.product.selectedCategoryName,
 });
 
-// Connect Redux and export component
-export default connect(mapStateToProps, { fetchProductsByCategory })(Home);
+
+export default connect(mapStateToProps, { fetchProductsByCategory })(withRouter(Home));

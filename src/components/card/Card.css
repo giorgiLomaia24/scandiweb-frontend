@@ -90,12 +90,12 @@
 }
 
 .hover-effect {
-    visibility: hidden !important;
-    transition: visibility 0.3s ease-in-out !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-in-out !important;
   }
   
   .card:hover > .card--image > .custom-button.hover-effect {
-    visibility: visible !important;
+    opacity: 1 !important;
   }
   
 

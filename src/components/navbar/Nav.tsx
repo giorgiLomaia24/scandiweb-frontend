@@ -7,20 +7,10 @@ import Cart from "../cart/Cart";
 import Notification from "../notification/Notification";
 import { CiMenuBurger } from "react-icons/ci";
 import { IoCloseSharp } from "react-icons/io5";
+import { withRouter } from "../../utils/withRouter";
+import { NavbarProps } from "../../types/propType";
 import "./navbar.css";
 
-
-interface NavbarProps {
-  products: any[]
-  categories: { id: string; name: string }[];
-  selectedCategory: string;
-  totalItemCount: number;
-  orderPlaced: boolean;
-  fetchCategories: () => void;
-  setSelectedCategory: (category: string) => void;
-  setSelectedCategoryName: (categoryName: string) => void;
-  fetchProductsByCategory: (categoryId: string) => void;
-}
 
 interface NavbarState {
   isDropdownOpen: boolean;
@@ -40,12 +30,27 @@ class Nav extends Component<NavbarProps, NavbarState> {
   }
 
   componentDidMount() {
-    this.props.fetchCategories();
+    const { categories, fetchCategories, match, selectedCategory, setSelectedCategory, setSelectedCategoryName } = this.props;
+
+    let categoryParam = match?.params?.categoryName || window.location.pathname.split("/")[1] || "all";
+
+
+    if (categories.length === 0) {
+      fetchCategories();
+    }
+
+    if (categoryParam !== selectedCategory) {
+      setSelectedCategory(categoryParam)
+      setSelectedCategoryName(categoryParam);
+    }
+
     window.addEventListener('resize', this.handleResize);
     this.handleResize()
   }
 
   componentDidUpdate(prevProps: NavbarProps) {
+
+
     if (prevProps.selectedCategory !== this.props.selectedCategory) {
       this.setState({ isDropdownOpen: false });
       document.body.classList.remove('no-scroll');
@@ -70,7 +75,6 @@ class Nav extends Component<NavbarProps, NavbarState> {
   handleCategoryClick = (categoryId: string | number) => {
     const categoryIdToString = String(categoryId);
     this.props.setSelectedCategory(categoryIdToString);
-    this.props.fetchProductsByCategory(categoryIdToString);
   };
 
   toggleDropdown = () => {
@@ -112,12 +116,13 @@ class Nav extends Component<NavbarProps, NavbarState> {
 
   render() {
 
-    console.log(this.props.orderPlaced, 'ordeni');
+    const { match, selectedCategory, categories } = this.props;
+    const categoryParam = match.params.categoryName;
 
     return (
       <>
 
-       <Notification message="ORDER PLACED SUCCESSFULLY" visible={this.props.orderPlaced} />
+        <Notification message="ORDER PLACED SUCCESSFULLY" visible={this.props.orderPlaced} />
 
         <div className="navbar">
           {this.state.isMobileMenu && (<div className="humburger-menu" onClick={this.handleMobileNavOpen}><CiMenuBurger style={{ color: '#5ECE7B', fontSize: '26px', marginLeft: '-20px', fontWeight: '600' }} />   </div>)}
@@ -128,41 +133,28 @@ class Nav extends Component<NavbarProps, NavbarState> {
                 <IoCloseSharp style={{ color: "#fff", fontSize: "26px", fontWeight: "600" }} />
               </div>
             )}
+            {categories.map((category) => {
+              const categoryNameLower = category.name.toLowerCase();
+              const isActive =
+                selectedCategory.toLowerCase() === categoryNameLower ||
+                categoryParam?.toLowerCase() === categoryNameLower;
 
-            {this.props.categories.map((category) => (
-              <Link
-                to={"/"}
-                key={category.id}
-                className={`nav-link  ${
-                  String(this.props.selectedCategory) === String(category.id) ||
-                    (String(this.props.selectedCategory) === "all" && category.name === "all")
-                    ? "active"
-                    : ""
-                }`}
-                data-testid={
-                  String(this.props.selectedCategory) === String(category.id) ||
-                    (String(this.props.selectedCategory) === "all" && category.name === "all")
-                    ? "active-category-link"
-                    : "category-link"
-                }
-                onClick={() => {
-                  this.handleCategoryClick(category.name === "all" ? "all" : category.id);
-                  this.setState({ openMobileNav: false });
-                  this.props.setSelectedCategoryName(category.name);
-                }}
-              >
-                <li
-                  className={
-                    String(this.props.selectedCategory) === String(category.id) ||
-                      (String(this.props.selectedCategory) === "all" && category.name === "all")
-                      ? "active"
-                      : ""
-                  }
+              return (
+                <Link
+                  to={category.name === "all" ? "/all" : `/${categoryNameLower}`}
+                  key={category.id}
+                  className={`nav-link ${isActive ? "active" : ""}`}
+                  data-testid={isActive ? "active-category-link" : "category-link"}
+                  onClick={() => {
+                    this.props.setSelectedCategory(category.name);
+                    this.props.setSelectedCategoryName(category.name);
+                    this.setState({ openMobileNav: false });
+                  }}
                 >
-                  {category.name.toLocaleUpperCase()}
-                </li>
-              </Link>
-            ))}
+                  <li className={`nav-link ${isActive ? "active" : ""}`}>{category.name.toUpperCase()}</li>
+                </Link>
+              );
+            })}
           </ul>
 
 
@@ -211,4 +203,4 @@ export default connect(mapStateToProps, {
   setSelectedCategory,
   fetchProductsByCategory,
   setSelectedCategoryName
-})(Nav);
+})(withRouter(Nav));

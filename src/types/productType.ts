@@ -1,33 +1,38 @@
 export interface ProductsType {
-    products: ProductType[]
+  products: ProductType[]
 }
 
 export interface ProductType {
-    id: string;
-    name: string;
-    gallery: string[];
-    in_stock: boolean;
-    attributes?: AttributeType[];
-    price: PriceType;
-    description: string;
-  }
-  
- 
-  export interface AttributeType {
-    id: number;
-    name: string;
-    type: string;
-    values?: AttributeValueType[]; 
-  }
-  
-  export interface AttributeValueType {
-    display_value: string;
-    value: string;
-  }
- 
-  export interface PriceType {
-    amount: number;
-    currency_label: string;
-    currency_symbol: string;
-  }
-  
+  id: string;
+  name: string;
+  gallery: string[];
+  in_stock: boolean;
+  attributes?: AttributeType[];
+  price: PriceType;
+  description: string;
+  category_id?: number;
+}
+
+
+export interface AttributeType {
+  id: number;
+  name: string;
+  type: string;
+  values?: AttributeValueType[];
+}
+
+export interface AttributeValueType {
+  display_value: string;
+  value: string;
+}
+
+export interface PriceType {
+  amount: number;
+  currency_label: string;
+  currency_symbol: string;
+}
+
+export interface CategoryType {
+  id: string;
+  name: string;
+}
