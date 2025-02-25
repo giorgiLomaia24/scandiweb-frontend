@@ -192,7 +192,6 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               cursor={product.in_stock ? "pointer" : "not-allowed"}
               margin={isHorizontal ? "15px auto" : ""}
               dataTestId="add-to-cart"
-              disabled={product.in_stock === false ? true : false}
             />
 
             <div className="description" data-testid="product-description">

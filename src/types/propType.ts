@@ -61,7 +61,6 @@ export interface ButtonPropsType {
     cursor?: string;
     margin?: string;
     dataTestId?: string;
-    disabled?: boolean; 
 }
 
 
