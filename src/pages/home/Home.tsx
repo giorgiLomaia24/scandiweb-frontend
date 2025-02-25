@@ -86,6 +86,11 @@ class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }>
     if (loading) return <HomePagePlaceHolder />;
     if (error) return <ErrorPage />;
 
+    console.log(this.props.products, 'products from redux')
+    console.log(this.state.filteredProducts, 'products from state that is filetered')
+    console.log(this.props.selectedCategory);
+    
+
 
     return (
       <>
