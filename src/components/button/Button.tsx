@@ -53,7 +53,6 @@ class Button extends Component<ButtonPropsType> {
             cursor,
             margin,
             dataTestId,
-            disabled
         } = this.props;
 
         const buttonStyles = {
@@ -85,7 +84,7 @@ class Button extends Component<ButtonPropsType> {
 
         return (
             <button
-                disabled={disabled}
+                disabled={this.props.disabled}
                 data-testid={dataTestId}
                 onClick={onClick}
                 className={`custom-button ${hoverEffect ? "hover-effect" : ""}`}
