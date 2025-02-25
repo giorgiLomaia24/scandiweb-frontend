@@ -6,7 +6,6 @@
     padding: 32px 16px;
     gap: 32px;
     position: fixed;
-    z-index: 5;
     background-color: #fff;
     box-sizing: border-box;
     z-index: 9999;
@@ -40,13 +39,11 @@
     max-height: 371px;
     gap: 40px;
     overflow-y: scroll;
-    /* ✅ Only show scrollbar when needed */
 }
 
 .cart-items_wrapper .cart-item {
     width: 100%;
     height: auto;
-    /* ✅ Allow item to expand */
     display: flex;
     justify-content: space-between;
     gap: 8px;
