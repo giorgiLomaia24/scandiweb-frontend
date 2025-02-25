@@ -77,21 +77,32 @@ class Nav extends Component<NavbarProps, NavbarState> {
     this.props.setSelectedCategory(categoryIdToString);
   };
 
+  // toggleDropdown = () => {
+  //   if (this.props.totalItemCount !== 0) {
+  //     this.setState((prevState) => {
+  //       const isNowOpen = !prevState.isDropdownOpen;
+
+  //       if (isNowOpen) {
+  //         document.body.classList.add('no-scroll');
+  //       } else {
+  //         document.body.classList.remove('no-scroll');
+  //       }
+
+  //       return { isDropdownOpen: isNowOpen };
+  //     });
+  //   }
+  // };
+
   toggleDropdown = () => {
-    if (this.props.totalItemCount !== 0) {
-      this.setState((prevState) => {
-        const isNowOpen = !prevState.isDropdownOpen;
-
-        if (isNowOpen) {
-          document.body.classList.add('no-scroll');
-        } else {
-          document.body.classList.remove('no-scroll');
-        }
-
-        return { isDropdownOpen: isNowOpen };
-      });
-    }
+    this.setState((prevState) => ({
+      isDropdownOpen: !prevState.isDropdownOpen,
+    }));
+  
+    setTimeout(() => {
+      this.forceUpdate(); 
+    }, 100); 
   };
+  
 
   handleMobileNavOpen = () => {
     if (window.innerWidth <= 871) {
