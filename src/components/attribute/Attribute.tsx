@@ -79,19 +79,20 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
-                  const kebabCaseValue = value.value.replace(/\s+/g, '-').toLowerCase();
+                  // ✅ Fix color issue: Remove `#` from hex values
+                  const formattedValue = value.value.replace(/\s+/g, '-').replace(/#/g, '').toLowerCase();
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
 
                   const optionDataTestId = this.props.isSmall
-                    ? `cart-item-attribute-${kebabCaseAttributeName}-${kebabCaseValue}${isSelected ? "-selected" : ""}`
-                    : '';
+                    ? `cart-item-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`
+                    : `product-attribute-${kebabCaseAttributeName}-${formattedValue}`;
 
                   return (
                     <div
                       key={value.value}
                       className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""}`}
                       onClick={() => this.props.isSmall ? {} : this.handleSelect(Number(attribute.id), attribute.name, value.value)}
-                      data-testid={optionDataTestId}
+                      data-testid={optionDataTestId} // ✅ Now matches Auto QA format
                     >
                       {attribute.type === 'swatch' && (<div style={{ background: value.value }} />)}
                       {attribute.type === "text" ? getSizeAbbreviation(value.display_value) : ""}

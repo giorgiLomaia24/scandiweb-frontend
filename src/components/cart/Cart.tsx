@@ -60,7 +60,7 @@ export class Cart extends Component<CartProps> {
 
     return (
       <>
-        <div className="cart-container">
+        <div className="cart-container" data-testid="cart-overlay">
           <div className="cart-header">
             My Bag, <span className="total-items">{totalItemCount} items</span>
           </div>
