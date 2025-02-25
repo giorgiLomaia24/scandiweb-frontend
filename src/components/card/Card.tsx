@@ -53,7 +53,8 @@ export class Card extends Component<Props> {
 
     render() {
         const { id, imageUrl, name, price, in_stock } = this.props;
-        const kebabCaseName = kebabCase(name);
+        const kebabCaseName = kebabCase(name).replace(/-([a-z])-/, '$1');
+
 
         return (
             <Link to={`/product/${id}`} className={`card ${!in_stock ? 'out-of-stock' : ''}`} data-testid={`product-${kebabCaseName}`} >
