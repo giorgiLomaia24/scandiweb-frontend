@@ -179,7 +179,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
           </div>
         </div>
 
-        {this.props.totalItemCount > 0 && this.state.isDropdownOpen && (<Cart />)}
+        { this.state.isDropdownOpen && (<Cart />)}
         {this.props.totalItemCount > 0 && this.state.isDropdownOpen && (<div className="overlay" onClick={this.closeOverlay} />)}
 
 
