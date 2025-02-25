@@ -69,17 +69,27 @@ class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }>
 
   updateFilteredProducts = () => {
     const { products } = this.props;
-    const categoryId = this.getCategoryIdFromParamsOrRedux();
-
-    if (categoryId === 0) {
-      this.setState({ filteredProducts: products });
+    const categoryId = String(this.getCategoryIdFromParamsOrRedux()); // Convert to string
+  
+    console.log("Filtering for category:", categoryId);
+    console.log("Redux products before filtering:", products);
+  
+    if (categoryId === "all") {
+      console.log("Setting all products in state...");
+      this.setState({ filteredProducts: [...products] }); // Ensure we copy products
       return;
     }
-
-    const filtered = products.filter((product) => Number(product.category_id) === categoryId);
+  
+    const filtered = products.filter((product) => {
+      console.log(`Checking product ${product.id} with category ${product.category_id}`);
+      return String(product.category_id) === categoryId; // ✅ Convert both to strings
+    });
+  
+    console.log("Filtered Products:", filtered);
     this.setState({ filteredProducts: filtered });
-
   };
+  
+  
 
   render() {
     const { loading, error, setSelectedCategoryName } = this.props;
