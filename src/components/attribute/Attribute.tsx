@@ -66,6 +66,8 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
       <>
         {this.props.attributes.map((attribute) => {
           const kebabCaseAttributeName = attribute.name.replace(/\s+/g, '-').toLowerCase();
+
+          // ✅ Ensuring correct data-testid for PDP vs Cart
           const containerDataTestId = this.props.isSmall
             ? `cart-item-attribute-${kebabCaseAttributeName}`
             : `product-attribute-${kebabCaseAttributeName}`;
@@ -74,15 +76,16 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
             <div
               key={attribute.id}
               className={`attribute--wrapper ${this.props.isSmall ? "sm" : ""}`}
-              data-testid={containerDataTestId}
+              data-testid={containerDataTestId} // ✅ Correct container test ID
             >
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
-                  // ✅ Fix color issue: Remove `#` from hex values
+                  // ✅ Convert to kebab-case, remove `#` for hex colors
                   const formattedValue = value.value.replace(/\s+/g, '-').replace(/#/g, '').toLowerCase();
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
 
+                  // ✅ Ensure correct test ID for PDP and Cart attributes
                   const optionDataTestId = this.props.isSmall
                     ? `cart-item-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`
                     : `product-attribute-${kebabCaseAttributeName}-${formattedValue}`;
