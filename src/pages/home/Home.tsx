@@ -9,7 +9,7 @@ import { capitalizeFirstLetter } from "../../utils/helperFunctions";
 import Card from "../../components/card/Card";
 import HomePagePlaceHolder from "../../placeholders/home/HomePagePlaceHolder";
 import ErrorPage from "../../errors/ErrorPage";
-import { withRouter } from "../../utils/withRouter"; 
+import { withRouter } from "../../utils/withRouter";
 import "./home.css";
 
 class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }> {
@@ -27,17 +27,19 @@ class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }>
       fetchProductsByCategory("all");
     }
 
-    this.updateFilteredProducts(); 
+    this.updateFilteredProducts();
   }
 
   componentDidUpdate(prevProps: HomePropsType) {
-    
     if (
       prevProps.selectedCategory !== this.props.selectedCategory ||
       prevProps.products !== this.props.products ||
       prevProps.match.params.categoryName !== this.props.match.params.categoryName
     ) {
-      this.updateFilteredProducts();
+      console.log("Updating filtered products...");
+      if (this.props.products.length > 0) { // Ensure Redux has products before updating
+        this.updateFilteredProducts();
+      }
     }
   }
 
@@ -52,22 +54,22 @@ class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }>
 
   getCategoryIdFromParamsOrRedux = (): number => {
     const { categories, selectedCategory, match } = this.props;
-    const categoryIdFromParams = match.params.categoryName; 
+    const categoryIdFromParams = match.params.categoryName;
 
     const categoryName = categoryIdFromParams || selectedCategory;
 
-    if (!categoryName || categoryName === "all") return 0; 
+    if (!categoryName || categoryName === "all") return 0;
 
     const foundCategory = categories.find(
       (cat: CategoryType) => cat.name.toLowerCase() === categoryName.toLowerCase()
     );
 
-    return foundCategory ? Number(foundCategory.id) : 0; 
+    return foundCategory ? Number(foundCategory.id) : 0;
   };
 
   updateFilteredProducts = () => {
     const { products } = this.props;
-    const categoryId = this.getCategoryIdFromParamsOrRedux(); 
+    const categoryId = this.getCategoryIdFromParamsOrRedux();
 
     if (categoryId === 0) {
       this.setState({ filteredProducts: products });
@@ -89,7 +91,7 @@ class Home extends Component<HomePropsType, { filteredProducts: ProductType[] }>
     console.log(this.props.products, 'products from redux')
     console.log(this.state.filteredProducts, 'products from state that is filetered')
     console.log(this.props.selectedCategory);
-    
+
 
 
     return (
