@@ -16,6 +16,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       name
       gallery
       in_stock
+      description
       price {
         amount
         currency_label
