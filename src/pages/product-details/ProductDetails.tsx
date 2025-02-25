@@ -21,6 +21,7 @@ interface ProductDetailsState {
   isHorizontal: boolean;
   activeImageIndex: number;
   selectedAttributes: SelectedAttributesType;
+  productState?: ProductType;
 }
 
 export class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsState> {
@@ -33,11 +34,14 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
   sliderRef = createRef<{ scrollToNext: () => void; scrollToPrev: () => void }>();
 
   componentDidMount() {
-
+    console.log("componentDidMount - ID:", this.props.id);
+    console.log("componentDidMount - Product from Redux before fetching:", this.props.product);
 
     if (this.props.products.length === 0) {
+      console.log("Fetching product details...");
       this.props.fetchProductDetails(this.props.id ?? "");
     } else {
+      console.log("Finding product in Redux store...");
       const product = this.props.products.find((p: ProductType) => p.id === this.props.id);
       if (product) {
         this.props.setSelectedProduct(product);
@@ -51,6 +55,12 @@ export class ProductDetails extends Component<ProductDetailsPropsType, ProductDe
 
   componentDidUpdate(prevProps: ProductDetailsPropsType) {
     if (prevProps.product !== this.props.product) {
+      this.setDefaultAttributes();
+    }
+
+    if (prevProps.product !== this.props.product && this.props.product) {
+      console.log("Redux updated with product:", this.props.product);
+      this.setState({ productState: this.props.product });
       this.setDefaultAttributes();
     }
   }
@@ -199,13 +209,10 @@ const mapStateToProps = (state: RootState) => ({
   cartItems: state.cart.items,
 });
 
-const ProductDetailsWrapper = (props: Omit<ProductDetailsPropsType, "id">) => {
-  const { id } = useParams<{ id: string }>(); // ✅ Extract product ID from the URL
-  if (!id) return <p>Product ID is missing</p>; // ✅ Handle missing ID
-
-  return <ProductDetails {...props} id={id} />; // ✅ Pass `id` properly
+const ProductDetailsWrapper = (props: ProductDetailsPropsType) => {
+  const { id } = useParams<{ id: string }>();
+  return <ProductDetails {...props} id={id ?? ""} />;
 };
-
 
 
 export default connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder,setSelectedProduct })(ProductDetailsWrapper);
