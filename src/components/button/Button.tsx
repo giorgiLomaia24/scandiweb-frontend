@@ -84,6 +84,7 @@ class Button extends Component<ButtonPropsType> {
 
         return (
             <button
+                disabled={this.props.disabled}
                 data-testid={dataTestId}
                 onClick={onClick}
                 className={`custom-button ${hoverEffect ? "hover-effect" : ""}`}
