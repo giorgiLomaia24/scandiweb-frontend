@@ -81,8 +81,11 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
-                  // ✅ Convert to kebab-case, remove `#` for hex colors
-                  const formattedValue = value.value.replace(/\s+/g, '-').replace(/#/g, '').toLowerCase();
+                  // ✅ Preserve `#` in hex color attributes
+                  const formattedValue = value.value.startsWith("#")
+                    ? value.value.toUpperCase() // Ensure uppercase to match Auto QA expectation
+                    : value.value.replace(/\s+/g, '-').toLowerCase();
+
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
 
                   // ✅ Ensure correct test ID for PDP and Cart attributes
