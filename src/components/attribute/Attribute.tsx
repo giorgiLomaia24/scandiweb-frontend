@@ -48,16 +48,20 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
     }
   }
 
-  handleSelect = (attributeId: number, name: string, value: string) => {
-    const updatedAttributes = {
-      ...this.state.selectedAttributes,
-      [name]: { id: attributeId, value },
-    };
+  handleSelect = (attributeId: number, attributeName: string, value: string) => {
+    this.setState((prevState) => {
+      const updatedAttributes = {
+        ...prevState.selectedAttributes,
+        [attributeName]: { id: attributeId, value },
+      };
 
-    this.setState({ selectedAttributes: updatedAttributes });
+      console.log("Selected Attributes Updated:", updatedAttributes); // ✅ Debugging
+
+      return { selectedAttributes: updatedAttributes };
+    });
 
     if (this.props.onSelect) {
-      this.props.onSelect(attributeId, name, value);
+      this.props.onSelect(attributeId, attributeName, value);
     }
   };
 
@@ -83,7 +87,7 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                 {attribute.values?.map((value) => {
                   // ✅ Preserve `#` in hex color attributes but ensure lowercase
                   const formattedValue = value.value.startsWith("#")
-                    ? value.value.toLowerCase() // Preserve `#` and ensure lowercase for Auto QA
+                    ? value.value.toLowerCase() // Preserve `#` and lowercase to match Auto QA format
                     : value.value.replace(/\s+/g, '-').toLowerCase();
 
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
@@ -91,14 +95,14 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                   // ✅ Ensure correct test ID for PDP and Cart attributes
                   const optionDataTestId = this.props.isSmall
                     ? `cart-item-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`
-                    : `product-attribute-${kebabCaseAttributeName}-${formattedValue}`;
+                    : `product-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`;
 
                   return (
                     <div
                       key={value.value}
                       className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""}`}
                       onClick={() => this.props.isSmall ? {} : this.handleSelect(Number(attribute.id), attribute.name, value.value)}
-                      data-testid={optionDataTestId} // ✅ Now matches Auto QA format exactly
+                      data-testid={optionDataTestId} // ✅ Now includes `-selected` when active
                     >
                       {attribute.type === 'swatch' && (<div style={{ background: value.value }} />)}
                       {attribute.type === "text" ? getSizeAbbreviation(value.display_value) : ""}
