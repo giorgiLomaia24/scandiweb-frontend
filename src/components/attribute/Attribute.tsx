@@ -67,7 +67,7 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
         {this.props.attributes.map((attribute) => {
           const kebabCaseAttributeName = attribute.name.replace(/\s+/g, '-').toLowerCase();
 
-          // ✅ Ensuring correct data-testid for PDP vs Cart
+          // ✅ Ensure correct data-testid for PDP vs Cart
           const containerDataTestId = this.props.isSmall
             ? `cart-item-attribute-${kebabCaseAttributeName}`
             : `product-attribute-${kebabCaseAttributeName}`;
@@ -81,9 +81,9 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
-                  // ✅ Preserve `#` in hex color attributes
+                  // ✅ Preserve `#` in hex color attributes but ensure lowercase
                   const formattedValue = value.value.startsWith("#")
-                    ? value.value.toUpperCase() // Ensure uppercase to match Auto QA expectation
+                    ? value.value.toLowerCase() // Preserve `#` and ensure lowercase for Auto QA
                     : value.value.replace(/\s+/g, '-').toLowerCase();
 
                   const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
@@ -98,7 +98,7 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                       key={value.value}
                       className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""}`}
                       onClick={() => this.props.isSmall ? {} : this.handleSelect(Number(attribute.id), attribute.name, value.value)}
-                      data-testid={optionDataTestId} // ✅ Now matches Auto QA format
+                      data-testid={optionDataTestId} // ✅ Now matches Auto QA format exactly
                     >
                       {attribute.type === 'swatch' && (<div style={{ background: value.value }} />)}
                       {attribute.type === "text" ? getSizeAbbreviation(value.display_value) : ""}
