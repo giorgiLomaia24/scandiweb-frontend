@@ -132,7 +132,9 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
   };
 
   addToCart = () => {
+    
     const { product, addToCart, cartItems, setPlaceOrder } = this.props;
+    console.log(product);
     if (product?.in_stock) {
       handleAddToCart(product, this.state.selectedAttributes, cartItems, addToCart);
     }
