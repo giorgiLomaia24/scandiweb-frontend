@@ -84,12 +84,12 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                 {attribute.values?.map((value) => {
                   const formattedValue = value.value.startsWith("#")
                     ? value.value.toUpperCase() // ✅ Convert hex values to uppercase (Fix Auto QA issue)
-                    : value.value.replace(/\s+/g, "-").toLowerCase();
+                    : value.value.replace(/\s+/g, "-"); // ✅ Keep original casing for non-hex values
 
-                  // ✅ Make user-selected attributes active in both PDP and Cart
-                  const isSelected =
-                    this.state.selectedAttributes[attribute.name]?.value === value.value ||
-                    this.props.selectedAttributes?.[attribute.name]?.value === value.value;
+                  // ✅ Ensure correct selection handling
+                  const isSelected = this.props.isSmall
+                    ? this.props.selectedAttributes?.[attribute.name]?.value === value.value // ✅ Always use `props` in Cart
+                    : this.state.selectedAttributes[attribute.name]?.value === value.value;  // ✅ Use state in PDP
 
                   // ✅ Ensure correct `data-testid` format
                   const optionDataTestId = this.props.isSmall
@@ -102,7 +102,11 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                       className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${
                         isSelected ? "active" : ""
                       }`}
-                      onClick={() => !this.props.isSmall && this.handleSelect(Number(attribute.id), attribute.name, value.value)}
+                      onClick={() => {
+                        if (!this.props.isSmall) {
+                          this.handleSelect(Number(attribute.id), attribute.name, value.value);
+                        }
+                      }}
                       data-testid={optionDataTestId}
                     >
                       {attribute.type === "swatch" && <div style={{ background: value.value }} />}
