@@ -31,6 +31,7 @@ export interface AttributePropsType {
     attributes: AttributeType[];
     selectedAttributes?: SelectedAttributesType; 
     isSmall: boolean;
+    isPDP: boolean;
     onSelect?: (attributeId: number, name: string, value: string) => void; 
 }
 

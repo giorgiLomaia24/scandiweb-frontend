@@ -153,6 +153,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
 
             {product.attributes && (
               <Attribute
+                isPDP={true}
                 attributes={product.attributes}
                 selectedAttributes={selectedAttributes}
                 isSmall={false}
