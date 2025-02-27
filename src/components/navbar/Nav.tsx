@@ -171,7 +171,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
           </div>
         </div>
 
-        { this.props.showCart && (<Cart />)}
+        { this.props.showCart && this.props.totalItemCount > 0 && (<Cart />)}
         {this.props.totalItemCount > 0 && this.props.showCart && (<div className="overlay" onClick={this.closeOverlay} />)}
 
 
