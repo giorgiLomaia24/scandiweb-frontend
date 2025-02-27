@@ -50,13 +50,10 @@ class Nav extends Component<NavbarProps, NavbarState> {
   }
 
   componentDidUpdate(prevProps: NavbarProps) {
-
-
     if (prevProps.selectedCategory !== this.props.selectedCategory) {
       this.setState({ isDropdownOpen: false });
       document.body.classList.remove('no-scroll');
     }
-
   }
 
   componentWillUnmount() {
@@ -97,8 +94,10 @@ class Nav extends Component<NavbarProps, NavbarState> {
   toggleDropdown = () => {
     if (this.props.showCart) {
       this.props.closeCart()
+      document.body.classList.remove('no-scroll');
     } else {
       this.props.openCart()
+      document.body.classList.add('no-scroll');
     }
   };
   
