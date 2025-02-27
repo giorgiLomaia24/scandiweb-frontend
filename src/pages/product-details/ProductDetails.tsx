@@ -105,10 +105,11 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     this.setState((prevState) => ({
       selectedAttributes: {
         ...prevState.selectedAttributes,
-        [attributeName]: { id: attributeId, value },
+        [attributeName]: { id: attributeId, value }, // ✅ Ensure attribute is correctly stored
       },
     }));
   };
+
 
   addToCart = () => {
 
@@ -170,21 +171,25 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               label="ADD TO CART"
               hoverEffect={false}
               backgroundColor={
-                product?.in_stock && Object.keys(this.state.selectedAttributes).length === product?.attributes?.length
+                product?.in_stock &&
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Check all attributes are selected
                   ? "#5ECE7B"
                   : "gray"
               }
               cursor={
-                product?.in_stock && Object.keys(this.state.selectedAttributes).length === product?.attributes?.length
+                product?.in_stock &&
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Check all attributes are selected
                   ? "pointer"
                   : "not-allowed"
               }
               margin={isHorizontal ? "15px auto" : ""}
               dataTestId="add-to-cart"
               disabled={
-                product?.in_stock === false || Object.keys(this.state.selectedAttributes).length !== product?.attributes?.length
+                product?.in_stock === false ||
+                !product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Only enable when all attributes are selected
               }
             />
+
 
 
             <div className="description" data-testid="product-description">
