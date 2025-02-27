@@ -80,7 +80,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
     if (this.props.showCart) {
       this.props.closeCart()
       document.body.classList.remove('no-scroll');
-    } else {
+    } else if(!this.props.showCart && this.props.totalItemCount > 0) {
       this.props.openCart()
       document.body.classList.add('no-scroll');
     }
