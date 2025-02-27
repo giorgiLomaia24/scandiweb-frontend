@@ -71,20 +71,24 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
   handleResize = () => {
     this.setState({ isHorizontal: window.innerWidth <= 1116 });
   };
-
   handleNext = () => {
     const { product } = this.props;
-    if (!product?.gallery || product.gallery.length === 0) return; 
+    if (!product?.gallery || product.gallery.length === 0) return; // Prevent error
   
-    this.sliderRef.current?.scrollToNext();
+    console.log("Slider Ref:", this.sliderRef.current); // Debugging log
+  
+    if (this.sliderRef.current) {
+      this.sliderRef.current.scrollToNext();
+    }
   
     this.setState(
       (prevState) => ({
-        activeImageIndex: (prevState.activeImageIndex + 1) % product.gallery.length, 
+        activeImageIndex: (prevState.activeImageIndex + 1) % product.gallery.length,
       }),
       () => window.scrollTo({ top: 0, behavior: "smooth" })
     );
   };
+  
   
 
   handlePrev = () => {
