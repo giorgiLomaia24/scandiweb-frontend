@@ -121,6 +121,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     }
     setPlaceOrder(false);
     openCart();
+    document.body.classList.add('no-scroll');
     
   };
 
