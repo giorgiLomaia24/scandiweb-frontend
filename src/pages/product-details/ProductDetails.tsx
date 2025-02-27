@@ -105,10 +105,11 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     this.setState((prevState) => ({
       selectedAttributes: {
         ...prevState.selectedAttributes,
-        [attributeName]: { id: attributeId, value }, // ✅ Ensure attribute is correctly stored
+        [attributeName]: { id: attributeId, value }, // ✅ Update only what user selects
       },
     }));
   };
+
 
 
   addToCart = () => {
@@ -172,13 +173,13 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               hoverEffect={false}
               backgroundColor={
                 product?.in_stock &&
-                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Check all attributes are selected
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Ensure all attributes are selected
                   ? "#5ECE7B"
                   : "gray"
               }
               cursor={
                 product?.in_stock &&
-                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Check all attributes are selected
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Ensure all attributes are selected
                   ? "pointer"
                   : "not-allowed"
               }
@@ -186,9 +187,10 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               dataTestId="add-to-cart"
               disabled={
                 product?.in_stock === false ||
-                !product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Only enable when all attributes are selected
+                !product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Disable unless all attributes are selected
               }
             />
+
 
 
 
