@@ -1,4 +1,4 @@
-/* Centered Error Page */
+
 .error-container {
     display: flex;
     flex-direction: column;
@@ -10,7 +10,7 @@
     padding: 20px;
   }
   
-  /* Error Title */
+ 
   .error-title {
     font-size: 2.5rem;
     font-weight: bold;
@@ -18,15 +18,14 @@
     margin-bottom: 10px;
   }
   
-  /* Error Message */
+
   .error-message {
     font-size: 1.2rem;
     color: #555;
     margin-bottom: 20px;
     max-width: 500px;
   }
-  
-  /* Refresh Button */
+
   .error-button {
     padding: 12px 20px;
     font-size: 1rem;
@@ -43,7 +42,7 @@
     background-color: #c9302c;
   }
   
-  /* Responsive */
+  
   @media (max-width: 768px) {
     .error-title {
       font-size: 2rem;

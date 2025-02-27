@@ -74,15 +74,18 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
 
   handleNext = () => {
     const { product } = this.props;
+    if (!product?.gallery || product.gallery.length === 0) return; 
+  
     this.sliderRef.current?.scrollToNext();
-
+  
     this.setState(
       (prevState) => ({
-        activeImageIndex: (prevState.activeImageIndex + 1) % (product?.gallery.length || 1),
+        activeImageIndex: (prevState.activeImageIndex + 1) % product.gallery.length, 
       }),
       () => window.scrollTo({ top: 0, behavior: "smooth" })
     );
   };
+  
 
   handlePrev = () => {
     const { product } = this.props;

@@ -129,5 +129,5 @@ const mapStateToProps = (state: RootState) => ({
   setSelectedCategoryName: state.product.selectedCategoryName,
 });
 
-// ✅ Connect Redux & withRouter
+
 export default connect(mapStateToProps, { fetchProductsByCategory })(withRouter(Home));
