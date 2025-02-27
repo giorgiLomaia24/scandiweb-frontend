@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import { connect } from "react-redux";
 import { RootState } from "../../redux/store";
 import { fetchProductDetails, setPlaceOrder, setSelectedProduct } from "../../redux/slices/productSlice";
-import { addToCart, setShowCart } from "../../redux/slices/cartSlice";
+import { addToCart, openCart } from "../../redux/slices/cartSlice";
 import Slider from "../../components/slider/Slider";
 import Attribute from "../../components/attribute/Attribute";
 import ProductImage from "../../components/pproduct-image/ProductImage";
@@ -114,13 +114,13 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
 
   addToCart = () => {
 
-    const { product, addToCart, cartItems, setPlaceOrder,setShowCart } = this.props;
+    const { product, addToCart, cartItems, setPlaceOrder, openCart } = this.props;
     console.log(product);
     if (product?.in_stock) {
       handleAddToCart(product, this.state.selectedAttributes, cartItems, addToCart);
     }
     setPlaceOrder(false);
-    setShowCart(true);
+    openCart();
     
   };
 
@@ -216,4 +216,4 @@ const mapStateToProps = (state: RootState, ownProps: any) => ({
   cartItems: state.cart.items,
 });
 
-export default withRouter(connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder, setSelectedProduct, setShowCart })(ProductDetails));
+export default withRouter(connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder, setSelectedProduct, openCart })(ProductDetails));

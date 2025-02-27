@@ -11,7 +11,7 @@ export interface ProductDetailsPropsType {
     addToCart: (item: CartItemType) => void;
     setPlaceOrder: (status: boolean) => void;
     setSelectedProduct: (product: ProductType) => void;
-    setShowCart: (state: boolean) => void;
+    openCart: () => void;
     cartItems: CartItemType[];
     id: string;
 }
@@ -96,7 +96,8 @@ export interface NavbarProps {
     selectedCategory: string;
     totalItemCount: number;
     orderPlaced: boolean;
-    setShowCart: (state:boolean) => void;
+    closeCart: () => void;
+    openCart: () => void;
     fetchCategories: () => void;
     setSelectedCategory: (category: string) => void;
     setSelectedCategoryName: (categoryName: string) => void;

@@ -2,6 +2,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import { RootState } from "../../redux/store";
 import { fetchCategories, setSelectedCategory, fetchProductsByCategory, setSelectedCategoryName } from "../../redux/slices/productSlice";
+import { closeCart, openCart } from "../../redux/slices/cartSlice";
 import { Link } from "react-router-dom";
 import Cart from "../cart/Cart";
 import Notification from "../notification/Notification";
@@ -10,7 +11,6 @@ import { IoCloseSharp } from "react-icons/io5";
 import { withRouter } from "../../utils/withRouter";
 import { NavbarProps } from "../../types/propType";
 import "./navbar.css";
-import { setShowCart } from "../../redux/slices/cartSlice";
 
 
 interface NavbarState {
@@ -95,7 +95,11 @@ class Nav extends Component<NavbarProps, NavbarState> {
   // };
 
   toggleDropdown = () => {
-    this.props.showCart === true ? setShowCart(false) : setShowCart(true);
+    if (this.props.showCart) {
+      this.props.closeCart()
+    } else {
+      this.props.openCart()
+    }
   };
   
 
@@ -186,7 +190,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
         </div>
 
         { this.props.showCart && (<Cart />)}
-        {this.props.totalItemCount > 0 && this.state.isDropdownOpen && (<div className="overlay" onClick={this.closeOverlay} />)}
+        {this.props.totalItemCount > 0 && this.props.showCart && (<div className="overlay" onClick={() => this.props.closeCart()} />)}
 
 
       </>
@@ -210,5 +214,6 @@ export default connect(mapStateToProps, {
   setSelectedCategory,
   fetchProductsByCategory,
   setSelectedCategoryName,
-  setShowCart
+  closeCart,
+  openCart
 })(withRouter(Nav));
