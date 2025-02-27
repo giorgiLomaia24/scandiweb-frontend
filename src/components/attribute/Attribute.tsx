@@ -11,13 +11,18 @@ interface AttributeState {
 export class Attribute extends Component<AttributePropsType, AttributeState> {
   constructor(props: AttributePropsType) {
     super(props);
+
     this.state = {
-      selectedAttributes: props.isPDP ? {} : this.getDefaultAttributes(), // ✅ Auto-select on Home, not PDP
+      selectedAttributes: props.isSmall
+        ? props.selectedAttributes || {} // ✅ Use selectedAttributes inside Cart
+        : props.isPDP
+        ? {} // ✅ Empty on PDP (user must select)
+        : this.getDefaultAttributes(), // ✅ Auto-select on Home
     };
   }
 
   componentDidMount() {
-    if (!this.props.isPDP && Object.keys(this.state.selectedAttributes).length === 0) {
+    if (!this.props.isPDP && !this.props.isSmall && Object.keys(this.state.selectedAttributes).length === 0) {
       this.setState({ selectedAttributes: this.getDefaultAttributes() });
 
       if (this.props.onSelect) {
@@ -42,6 +47,8 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
   };
 
   handleSelect = (attributeId: number, attributeName: string, value: string) => {
+    if (this.props.isSmall) return; // ❌ Prevent changing attributes inside cart
+
     this.setState(
       (prevState) => ({
         selectedAttributes: {
@@ -62,26 +69,28 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
     return (
       <>
         {this.props.attributes.map((attribute) => {
-          const kebabCaseAttributeName = attribute.name.replace(/\s+/g, '-').toLowerCase();
+          const kebabCaseAttributeName = attribute.name.replace(/\s+/g, "-").toLowerCase();
+
+          // ✅ Ensure correct data-testid for PDP vs Cart
           const containerDataTestId = this.props.isSmall
             ? `cart-item-attribute-${kebabCaseAttributeName}`
             : `product-attribute-${kebabCaseAttributeName}`;
 
           return (
-            <div
-              key={attribute.id}
-              className={`attribute--wrapper ${this.props.isSmall ? "sm" : ""}`}
-              data-testid={containerDataTestId}
-            >
+            <div key={attribute.id} className={`attribute--wrapper ${this.props.isSmall ? "sm" : ""}`} data-testid={containerDataTestId}>
               <div className="attribute--name">{attribute.name}:</div>
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
                   const formattedValue = value.value.startsWith("#")
                     ? value.value.toLowerCase()
-                    : value.value.replace(/\s+/g, '-').toLowerCase();
+                    : value.value.replace(/\s+/g, "-").toLowerCase();
 
-                  const isSelected = this.state.selectedAttributes[attribute.name]?.value === value.value;
+                  // ✅ Make user-selected attributes active
+                  const isSelected =
+                    this.state.selectedAttributes[attribute.name]?.value === value.value ||
+                    this.props.selectedAttributes?.[attribute.name]?.value === value.value;
 
+                  // ✅ Ensure correct test ID structure
                   const optionDataTestId = this.props.isSmall
                     ? `cart-item-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`
                     : `product-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`;
@@ -89,7 +98,9 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                   return (
                     <div
                       key={value.value}
-                      className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""}`}
+                      className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${
+                        isSelected ? "active" : ""
+                      }`}
                       onClick={() => !this.props.isSmall && this.handleSelect(Number(attribute.id), attribute.name, value.value)}
                       data-testid={optionDataTestId}
                     >
