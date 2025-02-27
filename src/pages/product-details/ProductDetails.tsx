@@ -13,7 +13,7 @@ import { ProductDetailsPropsType } from "../../types/propType";
 import { SelectedAttributesType } from "../../types/cartType";
 import ProductDetailsPlaceHolder from "../../placeholders/product/ProductDetailsPlaceHolder";
 import { ProductType } from "../../types/productType";
-import { withRouter } from "../../utils/withRouter"; // ✅ Ensures route params are injected
+import { withRouter } from "../../utils/withRouter";
 import "./productDetails.css";
 
 interface ProductDetailsState {
@@ -35,29 +35,22 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
   componentDidMount() {
     const { fetchProductDetails, setSelectedProduct, id, products } = this.props;
 
-    console.log("componentDidMount - ID:", id);
-    console.log("componentDidMount - Product from Redux before fetching:", this.props.product);
 
     if (!id) {
-      console.error("No product ID found in URL params.");
       return;
     }
 
     if (products.length === 0) {
-      console.log("Fetching product details from API...");
       fetchProductDetails(id);
     } else {
-      console.log("Searching for product in Redux store...");
       const product = products.find((p) => p.id === id);
       if (product) {
         setSelectedProduct(product);
       } else {
-        console.log("Product not found in store, fetching from API...");
         fetchProductDetails(id);
       }
     }
 
-    // this.setDefaultAttributes();
     window.addEventListener("resize", this.handleResize);
   }
 
@@ -65,9 +58,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     const { product } = this.props;
 
     if (prevProps.product !== product && product) {
-      console.log("Redux updated with product:", product);
       this.setState({ productState: product });
-      // this.setDefaultAttributes();
     }
   }
 
@@ -75,19 +66,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     window.removeEventListener("resize", this.handleResize);
   }
 
-  // setDefaultAttributes = () => {
-  //   const { product } = this.props;
-  //   if (!product?.attributes) return;
 
-  //   const defaultAttributes = product.attributes.reduce((acc, attr) => {
-  //     if (attr.values?.length) {
-  //       acc[attr.name] = { id: attr.id, value: attr.values[0].value };
-  //     }
-  //     return acc;
-  //   }, {} as SelectedAttributesType);
-
-  //   this.setState({ selectedAttributes: defaultAttributes });
-  // };
 
   handleResize = () => {
     this.setState({ isHorizontal: window.innerWidth <= 1116 });
@@ -132,7 +111,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
   };
 
   addToCart = () => {
-    
+
     const { product, addToCart, cartItems, setPlaceOrder } = this.props;
     console.log(product);
     if (product?.in_stock) {
@@ -190,12 +169,23 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               onClick={this.addToCart}
               label="ADD TO CART"
               hoverEffect={false}
-              backgroundColor={product.in_stock ? "#5ECE7B" : "gray"}
-              cursor={product.in_stock ? "pointer" : "not-allowed"}
+              backgroundColor={
+                product?.in_stock && Object.keys(this.state.selectedAttributes).length === product?.attributes?.length
+                  ? "#5ECE7B"
+                  : "gray"
+              }
+              cursor={
+                product?.in_stock && Object.keys(this.state.selectedAttributes).length === product?.attributes?.length
+                  ? "pointer"
+                  : "not-allowed"
+              }
               margin={isHorizontal ? "15px auto" : ""}
               dataTestId="add-to-cart"
-              disabled={product?.in_stock === false || Object.keys(this.state.selectedAttributes).length !== product?.attributes?.length}
+              disabled={
+                product?.in_stock === false || Object.keys(this.state.selectedAttributes).length !== product?.attributes?.length
+              }
             />
+
 
             <div className="description" data-testid="product-description">
               {parse(product.description)}
