@@ -51,7 +51,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
 
   componentDidUpdate(prevProps: NavbarProps) {
     if (prevProps.selectedCategory !== this.props.selectedCategory) {
-      this.setState({ isDropdownOpen: false });
+      this.props.closeCart()
       document.body.classList.remove('no-scroll');
     }
   }
@@ -75,21 +75,6 @@ class Nav extends Component<NavbarProps, NavbarState> {
     this.props.setSelectedCategory(categoryIdToString);
   };
 
-  // toggleDropdown = () => {
-  //   if (this.props.totalItemCount !== 0) {
-  //     this.setState((prevState) => {
-  //       const isNowOpen = !prevState.isDropdownOpen;
-
-  //       if (isNowOpen) {
-  //         document.body.classList.add('no-scroll');
-  //       } else {
-  //         document.body.classList.remove('no-scroll');
-  //       }
-
-  //       return { isDropdownOpen: isNowOpen };
-  //     });
-  //   }
-  // };
 
   toggleDropdown = () => {
     if (this.props.showCart) {
@@ -115,9 +100,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
 
 
   closeOverlay = () => {
-    this.setState(() => ({
-      isDropdownOpen: false,
-    }));
+     this.props.closeCart()
     document.body.classList.remove('no-scroll')
   }
 
@@ -189,7 +172,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
         </div>
 
         { this.props.showCart && (<Cart />)}
-        {this.props.totalItemCount > 0 && this.props.showCart && (<div className="overlay" onClick={() => this.props.closeCart()} />)}
+        {this.props.totalItemCount > 0 && this.props.showCart && (<div className="overlay" onClick={this.closeOverlay} />)}
 
 
       </>
