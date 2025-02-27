@@ -18,7 +18,7 @@ export class CartITem extends Component<CartItemType & CartItemProps> {
                             </div>
                             {attributes?.length ? (
                                 <Attribute
-                                    isPDP={true}
+                                    isPDP={false}
                                     attributes={attributes || []}
                                     isSmall={true}
                                     selectedAttributes={
