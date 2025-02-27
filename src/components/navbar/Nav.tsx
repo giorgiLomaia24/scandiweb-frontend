@@ -10,6 +10,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { withRouter } from "../../utils/withRouter";
 import { NavbarProps } from "../../types/propType";
 import "./navbar.css";
+import { setShowCart } from "../../redux/slices/cartSlice";
 
 
 interface NavbarState {
@@ -94,13 +95,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
   // };
 
   toggleDropdown = () => {
-    this.setState((prevState) => ({
-      isDropdownOpen: !prevState.isDropdownOpen,
-    }));
-  
-    setTimeout(() => {
-      this.forceUpdate(); 
-    }, 100); 
+    this.props.showCart === true ? setShowCart(false) : setShowCart(true);
   };
   
 
@@ -190,7 +185,7 @@ class Nav extends Component<NavbarProps, NavbarState> {
           </div>
         </div>
 
-        { this.state.isDropdownOpen && (<Cart />)}
+        { this.props.showCart && (<Cart />)}
         {this.props.totalItemCount > 0 && this.state.isDropdownOpen && (<div className="overlay" onClick={this.closeOverlay} />)}
 
 
@@ -205,7 +200,8 @@ const mapStateToProps = (state: RootState) => ({
   categories: state.product.categories,
   selectedCategory: state.product.selectedCategory,
   totalItemCount: state.cart.totalItemCount,
-  orderPlaced: state.product.orderPlaced
+  orderPlaced: state.product.orderPlaced,
+  showCart: state.cart.showCart
 
 });
 
@@ -213,5 +209,6 @@ export default connect(mapStateToProps, {
   fetchCategories,
   setSelectedCategory,
   fetchProductsByCategory,
-  setSelectedCategoryName
+  setSelectedCategoryName,
+  setShowCart
 })(withRouter(Nav));

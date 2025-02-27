@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import { connect } from "react-redux";
 import { RootState } from "../../redux/store";
 import { fetchProductDetails, setPlaceOrder, setSelectedProduct } from "../../redux/slices/productSlice";
-import { addToCart } from "../../redux/slices/cartSlice";
+import { addToCart, setShowCart } from "../../redux/slices/cartSlice";
 import Slider from "../../components/slider/Slider";
 import Attribute from "../../components/attribute/Attribute";
 import ProductImage from "../../components/pproduct-image/ProductImage";
@@ -105,7 +105,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     this.setState((prevState) => ({
       selectedAttributes: {
         ...prevState.selectedAttributes,
-        [attributeName]: { id: attributeId, value }, // ✅ Update only what user selects
+        [attributeName]: { id: attributeId, value },
       },
     }));
   };
@@ -114,12 +114,14 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
 
   addToCart = () => {
 
-    const { product, addToCart, cartItems, setPlaceOrder } = this.props;
+    const { product, addToCart, cartItems, setPlaceOrder,setShowCart } = this.props;
     console.log(product);
     if (product?.in_stock) {
       handleAddToCart(product, this.state.selectedAttributes, cartItems, addToCart);
     }
     setPlaceOrder(false);
+    setShowCart(true);
+    
   };
 
   render() {
@@ -174,13 +176,13 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               hoverEffect={false}
               backgroundColor={
                 product?.in_stock &&
-                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Ensure all attributes are selected
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name])
                   ? "#5ECE7B"
                   : "gray"
               }
               cursor={
                 product?.in_stock &&
-                  product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Ensure all attributes are selected
+                  product?.attributes?.every((attr) => selectedAttributes[attr.name])
                   ? "pointer"
                   : "not-allowed"
               }
@@ -188,7 +190,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
               dataTestId="add-to-cart"
               disabled={
                 product?.in_stock === false ||
-                !product?.attributes?.every((attr) => selectedAttributes[attr.name]) // ✅ Disable unless all attributes are selected
+                !product?.attributes?.every((attr) => selectedAttributes[attr.name])
               }
             />
 
@@ -206,7 +208,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
 }
 
 const mapStateToProps = (state: RootState, ownProps: any) => ({
-  id: ownProps.match.params.id, // ✅ Ensures `id` is retrieved correctly
+  id: ownProps.match.params.id,
   product: state.product.selectedProduct,
   products: state.product.products,
   loading: state.product.loading,
@@ -214,5 +216,4 @@ const mapStateToProps = (state: RootState, ownProps: any) => ({
   cartItems: state.cart.items,
 });
 
-// ✅ Wrapped with `withRouter` to pass `id` from URL
-export default withRouter(connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder, setSelectedProduct })(ProductDetails));
+export default withRouter(connect(mapStateToProps, { fetchProductDetails, addToCart, setPlaceOrder, setSelectedProduct, setShowCart })(ProductDetails));

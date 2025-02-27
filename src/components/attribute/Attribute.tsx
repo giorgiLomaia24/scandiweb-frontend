@@ -14,10 +14,10 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
 
     this.state = {
       selectedAttributes: props.isSmall
-        ? props.selectedAttributes || {} // ✅ Use pre-selected attributes inside Cart
+        ? props.selectedAttributes || {}
         : props.isPDP
-        ? {} // ✅ Start empty on PDP (User must select)
-        : this.getDefaultAttributes(), // ✅ Auto-select on Home
+          ? {}
+          : this.getDefaultAttributes(),
     };
   }
 
@@ -48,7 +48,7 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
   };
 
   handleSelect = (attributeId: number, attributeName: string, value: string) => {
-    if (this.props.isSmall) return; // ❌ Prevent changing attributes inside Cart
+    if (this.props.isSmall) return;
 
     this.setState(
       (prevState) => ({
@@ -58,7 +58,6 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
         },
       }),
       () => {
-        console.log("✅ Updated Attributes:", this.state.selectedAttributes);
         if (this.props.onSelect) {
           this.props.onSelect(attributeId, attributeName, value);
         }
@@ -72,7 +71,6 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
         {this.props.attributes.map((attribute) => {
           const kebabCaseAttributeName = attribute.name.replace(/\s+/g, "-").toLowerCase();
 
-          // ✅ Ensure correct `data-testid` for PDP vs Cart
           const containerDataTestId = this.props.isSmall
             ? `cart-item-attribute-${kebabCaseAttributeName}`
             : `product-attribute-${kebabCaseAttributeName}`;
@@ -83,15 +81,13 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
               <div className="attribute--value_wrapper">
                 {attribute.values?.map((value) => {
                   const formattedValue = value.value.startsWith("#")
-                    ? value.value.toUpperCase() // ✅ Convert hex values to uppercase (Fix Auto QA issue)
-                    : value.value.replace(/\s+/g, "-"); // ✅ Keep original casing for non-hex values
+                    ? value.value.toUpperCase()
+                    : value.value.replace(/\s+/g, "-");
 
-                  // ✅ Ensure correct selection handling
                   const isSelected = this.props.isSmall
-                    ? this.props.selectedAttributes?.[attribute.name]?.value === value.value // ✅ Always use `props` in Cart
-                    : this.state.selectedAttributes[attribute.name]?.value === value.value;  // ✅ Use state in PDP
+                    ? this.props.selectedAttributes?.[attribute.name]?.value === value.value
+                    : this.state.selectedAttributes[attribute.name]?.value === value.value;
 
-                  // ✅ Ensure correct `data-testid` format
                   const optionDataTestId = this.props.isSmall
                     ? `cart-item-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`
                     : `product-attribute-${kebabCaseAttributeName}-${formattedValue}${isSelected ? "-selected" : ""}`;
@@ -99,9 +95,8 @@ export class Attribute extends Component<AttributePropsType, AttributeState> {
                   return (
                     <div
                       key={value.value}
-                      className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${
-                        isSelected ? "active" : ""
-                      }`}
+                      className={`${attribute.type === "swatch" ? "attribute--swatch_value" : "attribute--text_value"} ${isSelected ? "active" : ""
+                        }`}
                       onClick={() => {
                         if (!this.props.isSmall) {
                           this.handleSelect(Number(attribute.id), attribute.name, value.value);
