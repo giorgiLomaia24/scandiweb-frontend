@@ -57,7 +57,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
       }
     }
 
-    this.setDefaultAttributes();
+    // this.setDefaultAttributes();
     window.addEventListener("resize", this.handleResize);
   }
 
@@ -67,7 +67,7 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     if (prevProps.product !== product && product) {
       console.log("Redux updated with product:", product);
       this.setState({ productState: product });
-      this.setDefaultAttributes();
+      // this.setDefaultAttributes();
     }
   }
 
@@ -75,19 +75,19 @@ class ProductDetails extends Component<ProductDetailsPropsType, ProductDetailsSt
     window.removeEventListener("resize", this.handleResize);
   }
 
-  setDefaultAttributes = () => {
-    const { product } = this.props;
-    if (!product?.attributes) return;
+  // setDefaultAttributes = () => {
+  //   const { product } = this.props;
+  //   if (!product?.attributes) return;
 
-    const defaultAttributes = product.attributes.reduce((acc, attr) => {
-      if (attr.values?.length) {
-        acc[attr.name] = { id: attr.id, value: attr.values[0].value };
-      }
-      return acc;
-    }, {} as SelectedAttributesType);
+  //   const defaultAttributes = product.attributes.reduce((acc, attr) => {
+  //     if (attr.values?.length) {
+  //       acc[attr.name] = { id: attr.id, value: attr.values[0].value };
+  //     }
+  //     return acc;
+  //   }, {} as SelectedAttributesType);
 
-    this.setState({ selectedAttributes: defaultAttributes });
-  };
+  //   this.setState({ selectedAttributes: defaultAttributes });
+  // };
 
   handleResize = () => {
     this.setState({ isHorizontal: window.innerWidth <= 1116 });
